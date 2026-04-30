@@ -1,0 +1,140 @@
+[
+  {
+    "key": "group_7c1d2e3f4a5b6",
+    "title": "A-Ö Links",
+    "fields": [
+      {
+        "key": "field_7c1d2e3f4a5b7a",
+        "label": "Dynamic source",
+        "name": "source_group",
+        "type": "group",
+        "instructions": "Published pages below the selected root are listed on each page view (the root itself is not listed). If a manual row uses the same page as one in that tree, the row updates that entry.",
+        "required": 0,
+        "layout": "block",
+        "sub_fields": [
+          {
+            "key": "field_7c1d2e3f4a5b7b",
+            "label": "Root page",
+            "name": "root_page",
+            "type": "post_object",
+            "post_type": ["page"],
+            "allow_null": 1,
+            "return_format": "id",
+            "ui": 1
+          }
+        ]
+      },
+      {
+        "key": "field_7c1d2e3f4a5b61",
+        "label": "Manual links",
+        "name": "links",
+        "type": "repeater",
+        "instructions": "Choose Page (internal) or External URL per row—not both. Label is optional (page title or URL is used when empty).",
+        "layout": "block",
+        "min": 0,
+        "max": 0,
+        "collapsed": "field_7c1d2e3f4a5b8a",
+        "button_label": "Add link",
+        "sub_fields": [
+          {
+            "key": "field_7c1d2e3f4a5b8a",
+            "label": "Link type",
+            "name": "row_type",
+            "type": "select",
+            "required": 0,
+            "wrapper": {
+              "width": "33"
+            },
+            "choices": {
+              "page": "Page",
+              "external": "External URL"
+            },
+            "default_value": "page",
+            "return_format": "value",
+            "multiple": 0,
+            "allow_null": 0,
+            "ui": 1,
+            "ajax": 0,
+            "parent_repeater": "field_7c1d2e3f4a5b61"
+          },
+          {
+            "key": "field_7c1d2e3f4a5b62",
+            "label": "Link label",
+            "name": "label",
+            "type": "text",
+            "instructions": "Optional. If empty: page title is used for Page rows; the URL is shown for External rows.",
+            "wrapper": {
+              "width": "33"
+            },
+            "parent_repeater": "field_7c1d2e3f4a5b61"
+          },
+          {
+            "key": "field_7c1d2e3f4a5b7c",
+            "label": "Page",
+            "name": "page",
+            "type": "post_object",
+            "instructions": "Internal link. If this page exists in the dynamic tree, this row updates that entry.",
+            "required": 0,
+            "conditional_logic": [
+              [
+                {
+                  "field": "field_7c1d2e3f4a5b8a",
+                  "operator": "==",
+                  "value": "page"
+                }
+              ]
+            ],
+            "wrapper": {
+              "width": "34"
+            },
+            "post_type": ["page"],
+            "allow_null": 1,
+            "return_format": "id",
+            "ui": 1,
+            "parent_repeater": "field_7c1d2e3f4a5b61"
+          },
+          {
+            "key": "field_7c1d2e3f4a5b63",
+            "label": "External URL",
+            "name": "url",
+            "type": "url",
+            "instructions": "Full URL for an external or non-page link.",
+            "required": 0,
+            "conditional_logic": [
+              [
+                {
+                  "field": "field_7c1d2e3f4a5b8a",
+                  "operator": "==",
+                  "value": "external"
+                }
+              ]
+            ],
+            "default_value": "",
+            "placeholder": "",
+            "parent_repeater": "field_7c1d2e3f4a5b61"
+          }
+        ]
+      }
+    ],
+    "location": [
+      [
+        {
+          "param": "post_type",
+          "operator": "==",
+          "value": "mod-a-o"
+        }
+      ],
+      [
+        {
+          "param": "block",
+          "operator": "==",
+          "value": "acf/a-o"
+        }
+      ]
+    ],
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "active": true
+  }
+]
