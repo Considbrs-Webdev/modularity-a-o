@@ -1,6 +1,6 @@
 # Modularity A-Ö Links
 
-Alphabetical (A-Ö) link list for Municipio Modularity: **published pages under a chosen root** are resolved on each **frontend page request** in PHP, merged with **manual links**, sorted with Swedish collation, grouped A–Ö, and rendered with **Blade** using Municipio component patterns (`@typography`, `@link`, `c-listing`).
+Alphabetical (A-Ö) link list for **Modularity**: **published pages under a chosen root** are resolved on each **frontend page request** in PHP, merged with **manual links**, sorted with Swedish collation, grouped A–Ö, and rendered with **Blade** using Municipio component patterns (`@typography`, `@link`, `c-listing`).
 
 ## Structure
 
@@ -20,10 +20,14 @@ Alphabetical (A-Ö) link list for Municipio Modularity: **published pages under 
 
 ## Build assets
 
+From the plugin directory:
+
 ```bash
 composer install
-npm install
+npm ci
 npm run build
 ```
+
+Optional (e.g. CI): `php build.php` runs the same installs and build. Pass `--no-composer` or `--no-npm` to skip either step. For a minimal release tree, use `--cleanup-release` (does not remove `.git`).
 
 Output: `assets/dist/manifest.json`, hashed CSS.

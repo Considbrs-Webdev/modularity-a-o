@@ -1,0 +1,138 @@
+# Copyright (C) 2026 Consid Borås AB
+# This file is distributed under the MIT.
+msgid ""
+msgstr ""
+"Project-Id-Version: Modularity A-Ö Links 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/modularity-a-o\n"
+"Last-Translator: \n"
+"Language-Team: Swedish\n"
+"Language: sv_SE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"POT-Creation-Date: 2026-05-04T08:37:35+02:00\n"
+"PO-Revision-Date: 2026-05-04 12:00+0200\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: modularity-a-o\n"
+
+#. Plugin Name of the plugin
+#: modularity-a-o.php
+msgid "Modularity A-Ö Links"
+msgstr "Modularity A-Ö-länkar"
+
+#. Plugin URI of the plugin
+#: modularity-a-o.php
+msgid "https://github.com/considbrs-webdev/modularity-a-o"
+msgstr "https://github.com/considbrs-webdev/modularity-a-o"
+
+#. Description of the plugin
+#: modularity-a-o.php
+msgid "Alphabetical (A-Ö) link lists for Modularity with optional page-tree import."
+msgstr "Alfabetiska (A-Ö) länklistor för Modularity med valfri import från sidträd."
+
+#. Author of the plugin
+#: modularity-a-o.php
+msgid "Consid Borås AB"
+msgstr "Consid Borås AB"
+
+#. Author URI of the plugin
+#: modularity-a-o.php
+msgid "https://github.com/Considbrs-Webdev"
+msgstr "https://github.com/Considbrs-Webdev"
+
+#: source/php/AcfFields/php/a-o-module.php:7
+#: source/php/Module/AOLinks.php:23
+#: source/php/Module/AOLinks.php:24
+msgid "A-Ö Links"
+msgstr "A-Ö-länkar"
+
+#: source/php/AcfFields/php/a-o-module.php:11
+msgid "Dynamic source"
+msgstr "Dynamisk källa"
+
+#: source/php/AcfFields/php/a-o-module.php:15
+msgid "Published pages below the selected root are listed on each page view (the root itself is not listed). If a manual row uses the same page as one in that tree, the row updates that entry."
+msgstr "Publicerade sidor under vald rotsida listas vid varje sidvisning (rotsidan listas inte). Om en manuell rad använder samma sida som i trädet uppdaterar raden den posten."
+
+#: source/php/AcfFields/php/a-o-module.php:30
+msgid "Root page"
+msgstr "Rotsida"
+
+#: source/php/AcfFields/php/a-o-module.php:53
+msgid "Manual links"
+msgstr "Manuella länkar"
+
+#: source/php/AcfFields/php/a-o-module.php:57
+msgid "Choose Page (internal) or External URL per row—not both. Label is optional (page title or URL is used when empty)."
+msgstr "Välj sida (intern) eller extern URL per rad – inte båda. Etikett är valfri (sidtitel eller URL används om den lämnas tom)."
+
+#: source/php/AcfFields/php/a-o-module.php:73
+msgid "Add link"
+msgstr "Lägg till länk"
+
+#: source/php/AcfFields/php/a-o-module.php:78
+msgid "Link type"
+msgstr "Länktyp"
+
+#: source/php/AcfFields/php/a-o-module.php:91
+#: source/php/AcfFields/php/a-o-module.php:129
+msgid "Page"
+msgstr "Sida"
+
+#: source/php/AcfFields/php/a-o-module.php:92
+#: source/php/AcfFields/php/a-o-module.php:162
+msgid "External URL"
+msgstr "Extern URL"
+
+#: source/php/AcfFields/php/a-o-module.php:105
+msgid "Link label"
+msgstr "Länketikett"
+
+#: source/php/AcfFields/php/a-o-module.php:109
+msgid "Optional. If empty: page title is used for Page rows; the URL is shown for External rows."
+msgstr "Valfritt. Om tomt används sidtitel för sidrader; URL visas för externa rader."
+
+#: source/php/AcfFields/php/a-o-module.php:133
+msgid "Internal link. If this page exists in the dynamic tree, this row updates that entry."
+msgstr "Intern länk. Om sidan finns i det dynamiska trädet uppdaterar raden den posten."
+
+#: source/php/AcfFields/php/a-o-module.php:166
+msgid "Full URL for an external or non-page link."
+msgstr "Fullständig URL för en extern eller icke-sidlänk."
+
+#: source/php/Admin/UniqueLinksValidator.php:62
+msgid "Page rows require a selected page."
+msgstr "Sidrader kräver en vald sida."
+
+#: source/php/Admin/UniqueLinksValidator.php:66
+msgid "This page has already been selected."
+msgstr "Sidan har redan valts."
+
+#: source/php/Admin/UniqueLinksValidator.php:77
+msgid "External URL rows need a URL."
+msgstr "Externa URL-rader behöver en URL."
+
+#: source/php/Admin/UniqueLinksValidator.php:83
+msgid "External URL must be valid."
+msgstr "Den externa URL:en måste vara giltig."
+
+#: source/php/Admin/UniqueLinksValidator.php:87
+msgid "This URL is already used in another external link row."
+msgstr "Denna URL används redan i en annan extern länkrad."
+
+#: source/php/Module/AOLinks.php:25
+msgid "Alphabetical links from a page tree plus manual entries."
+msgstr "Alfabetiska länkar från ett sidträd plus manuella poster."
+
+#: source/php/Module/AOLinks.php:47
+msgid "No links to display yet."
+msgstr "Inga länkar att visa än."
+
+#: source/php/Module/AOLinks.php:48
+msgid "Jump to letter"
+msgstr "Hoppa till bokstav"
+
+#: source/php/Module/views/a-o.blade.php:21
+msgid "Jump to letter %s"
+msgstr "Hoppa till bokstav %s"

@@ -1,24 +1,33 @@
 .mod-a-o {
   // ── Design tokens ────────────────────────────────────────────────────────────
-  // Primary maps to Municipio's --color-primary (dark forest green in Piteå theme).
-  --mod-a-o-primary:       var(--color-primary, var(--c-primary-color, #233b1f));
-  --mod-a-o-primary-dark:  var(--color-primary-dark, var(--c-primary-color-dark, #1a2e16));
-  // Light tint derived from primary; fallback to Figma token value #edf1e9.
-  --mod-a-o-primary-light: color-mix(in srgb, var(--mod-a-o-primary) 10%, white);
-  --mod-a-o-focus:         var(--color-accessibility, var(--c-focus-color, currentColor));
-  --mod-a-o-border:        var(--color-border, #e3e3e3);
-  --mod-a-o-text:          var(--color-black, currentColor);
+  --mod-a-o-primary: var(--color-primary, var(--c-primary-color, #233b1f));
+  --mod-a-o-primary-dark: var(
+    --color-primary-dark,
+    var(--c-primary-color-dark, #1a2e16)
+  );
+  --mod-a-o-primary-light: color-mix(
+    in srgb,
+    var(--mod-a-o-primary) 10%,
+    white
+  );
+  --mod-a-o-focus: var(
+    --color-accessibility,
+    var(--c-focus-color, currentColor)
+  );
+  --mod-a-o-border: var(--color-border, #d0d0d0);
+  --mod-a-o-text: var(--color-black, currentColor);
 
-  --mod-a-o-gap:           1rem;
-  --mod-a-o-section-gap:   2rem;
-  --mod-a-o-nav-gap:       0.375rem;
-  --mod-a-o-item-radius:   8px;
-  --mod-a-o-pill-radius:   43px;
+  --mod-a-o-gap: 1rem;
+  --mod-a-o-section-gap: 1rem;
+  --mod-a-o-nav-gap: 0.375rem;
+  --mod-a-o-card-radius: 8px;
+  --mod-a-o-pill-radius: 43px;
+  --mod-a-o-item-height: 40px;
+  --mod-a-o-item-padding-x: 1.5rem;
 
   color: var(--mod-a-o-text);
 
-  // ── Jump navigation ──────────────────────────────────────────────────────────
-  // Pill/tag style matching "Relaterade sidor" tags in the Piteå Figma prototype.
+  // ── Jump navigation — pill/tag style ────────────────────────────────────────
   &__jump {
     margin-bottom: calc(var(--mod-a-o-gap) * 1.5);
   }
@@ -30,7 +39,7 @@
   }
 
   &__jump-item {
-    margin: 0;
+    margin: 0 !important;
     padding: 0;
   }
 
@@ -46,7 +55,10 @@
     font-size: 0.875rem;
     font-weight: 700;
     line-height: 1.5;
-    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+    transition:
+      background-color 0.15s ease,
+      color 0.15s ease,
+      border-color 0.15s ease;
 
     &:hover {
       background-color: var(--mod-a-o-primary-light);
@@ -60,38 +72,40 @@
     }
   }
 
-  // ── Body layout ──────────────────────────────────────────────────────────────
+  // ── Body: sections stacked with consistent gap ───────────────────────────────
   &__body {
     display: flex;
     flex-direction: column;
     gap: var(--mod-a-o-section-gap);
   }
 
+  // ── Section card — groups the letter heading + its links in one container ────
   &__section {
-    padding-bottom: var(--mod-a-o-section-gap);
-    border-bottom: 1px solid var(--mod-a-o-border);
-
-    &:last-child {
-      border-bottom: none;
-      padding-bottom: 0;
-    }
+    border: 1px solid var(--mod-a-o-border);
+    border-radius: var(--mod-a-o-card-radius);
+    overflow: hidden;
+    // Push the anchor target below the sticky header when jump-linked.
+    scroll-margin-top: var(--mod-a-o-scroll-offset, 120px);
   }
 
-  // Section letter heading — primary colour treatment, no dark background bar.
+  // Letter heading acts as the card header with a tinted background.
   &__section-title {
+    display: block;
+    margin: 0;
+    padding: 0.625rem var(--mod-a-o-item-padding-x);
+    background-color: var(--mod-a-o-primary-light);
     color: var(--mod-a-o-primary);
-    margin-bottom: 0.875rem;
+    border-bottom: 1px solid var(--mod-a-o-border);
+    font-weight: 700;
   }
 
-  // ── Link items — "Länkar" card style from Piteå Figma prototype ──────────────
-  // Each link row gets a light-green background with rounded corners and a
-  // minimum touch target height of 65 px, matching the design context output.
+  // ── Link list inside a section card ─────────────────────────────────────────
+  // Items stack as a tight list separated only by a thin divider.
   .c-listing {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+    display: block;
+    margin: 0;
+    padding: 0;
 
-    // Reset the padding modifier applied by c-listing--padding-4.
     &.c-listing--padding-4 {
       padding: 0;
     }
@@ -100,29 +114,47 @@
   .c-listing__item {
     margin: 0;
     padding: 0;
+    border-bottom: 1px solid var(--mod-a-o-border);
+
+    &:last-child {
+      border-bottom: none;
+    }
   }
 
+  // The <a> is the clickable row — full width, flex, with icon animation.
   .c-listing__link {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
-    min-height: 65px;
-    padding: 1rem 1.875rem;
-    background-color: var(--mod-a-o-primary-light);
-    border-radius: var(--mod-a-o-item-radius);
+    width: 100%;
+    min-height: var(--mod-a-o-item-height);
+    padding: 0.75rem var(--mod-a-o-item-padding-x);
+    background-color: #fff;
     color: var(--mod-a-o-primary);
     text-decoration: none;
-    transition: background-color 0.15s ease, color 0.15s ease;
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease;
+
+    // Chevron icon — slides right on row hover.
+    .c-icon {
+      flex-shrink: 0;
+      transition: transform 0.2s ease;
+    }
 
     &:hover {
-      background-color: var(--mod-a-o-primary);
-      color: #fff;
+      background-color: #f0f0f0;
+      color: var(--mod-a-o-primary-dark);
+
+      .c-icon {
+        transform: translateX(5px);
+      }
     }
 
     &:focus-visible {
       outline: 2px solid var(--mod-a-o-focus);
-      outline-offset: 2px;
+      outline-offset: -2px;
     }
   }
 
@@ -130,10 +162,6 @@
     font-weight: 700;
     text-decoration: underline;
     text-underline-offset: 2px;
-  }
-
-  .c-listing__link:hover .c-listing__label {
-    text-decoration-color: rgba(255, 255, 255, 0.6);
   }
 
   // ── Empty state ──────────────────────────────────────────────────────────────

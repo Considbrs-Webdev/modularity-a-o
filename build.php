@@ -1,140 +1,132 @@
-#!/bin/php
+#!/usr/bin/env php
 <?php
-// Only allow run from cli.
-if (php_sapi_name() !== 'cli') {
+
+declare(strict_types=1);
+
+/**
+ * CI / deploy helper: install PHP deps and build frontend assets.
+ *
+ * Does not delete .git or source files. Optional cleanup for release tarballs:
+ *   php build.php --cleanup-release
+ */
+
+if (PHP_SAPI !== 'cli') {
     exit(0);
 }
 
-/* Parameters: 
- --no-composer      Does not install vendors via composer
- --cleanup          Remove removeables
- --install-npm      Installs npm package as per package.json name field
- --release          Does not run composer install and does not remove .git
-*/
+$pluginRoot = dirname(__FILE__);
+chdir($pluginRoot);
 
-// Any command needed to run and build plugin assets when newly cheched out of repo.
+$argv = $_SERVER['argv'] ?? [];
+$noComposer = in_array('--no-composer', $argv, true);
+$noNpm = in_array('--no-npm', $argv, true);
+$cleanupRelease = in_array('--cleanup-release', $argv, true);
+
 $buildCommands = [];
 
-//Add composer build, if flag --no-composer is undefined.
-//Dump autloader. 
-//Only if composer.json exists.
-if (file_exists('composer.json')) {
-    if (is_array($argv) && !in_array('--no-composer', $argv)) {
-        $buildCommands[] = 'composer install --prefer-dist --no-progress --no-dev';
-    }
-
-    $buildCommands[] = 'composer dump-autoload';
+if (file_exists('composer.json') && ! $noComposer) {
+    $buildCommands[] = 'composer install --prefer-dist --no-progress --no-interaction --no-dev';
 }
 
-//Run npm if package.json is found
-if (file_exists('package.json') && file_exists('package-lock.json')) {
-    if (is_array($argv) && !in_array('--install-npm', $argv)) {
+if (file_exists('package.json') && ! $noNpm) {
+    if (file_exists('package-lock.json')) {
         $buildCommands[] = 'npm ci --no-progress --no-audit';
-        $buildCommands[] = 'npm run build';
     } else {
-        $npmPackage = json_decode(file_get_contents('package.json'));
-        $buildCommands[] = "npm install $npmPackage->name";
-        $buildCommands[] = "rm -rf ./dist";
-        $buildCommands[] = "mv node_modules/$npmPackage->name/dist ./";
-    }
-} elseif (file_exists('package.json') && !file_exists('package-lock.json')) {
-    if (is_array($argv) && !in_array('--install-npm', $argv)) {
         $buildCommands[] = 'npm install --no-progress --no-audit';
-        $buildCommands[] = 'npm run build';
-    } else {
-        $npmPackage = json_decode(file_get_contents('package.json'));
-        $buildCommands[] = "npm install $npmPackage->name";
-        $buildCommands[] = "rm -rf ./dist";
-        $buildCommands[] = "mv node_modules/$npmPackage->name/dist ./";
     }
+    $buildCommands[] = 'npm run build';
 }
 
-// Files and directories not suitable for prod to be removed.
-$removables = [
-    '.gitignore',
-    '.github',
-    '.gitattributes',
-    'build.php',
-    'build.js',
-    '.npmrc',
-    //'composer.json',
-    'composer.lock',
-    'env-example',
-    'webpack.config.js',
-    'package-lock.json',
-    'package.json',
-    'phpunit.xml.dist',
-    'README.md',
-    './node_modules/',
-    './source/sass/',
-    './source/js/',
-    'LICENSE',
-    'babel.config.js',
-    'yarn.lock',
-    '.devcontainer',
-];
+$dirName = basename($pluginRoot);
 
-if (is_array($argv) && !in_array('--release', $argv)) {
-    $removables = array_merge($removables, ['.git']);
-}
-
-$dirName = basename(dirname(__FILE__));
-
-// Run all build commands.
-$output = '';
-$exitCode = 0;
 foreach ($buildCommands as $buildCommand) {
-    print "---- Running build command '$buildCommand' for $dirName. ----\n";
+    echo "---- Running build command '{$buildCommand}' for {$dirName}. ----\n";
     $timeStart = microtime(true);
     $exitCode = executeCommand($buildCommand);
-    $buildTime = round(microtime(true) - $timeStart);
-    print "---- Done build command '$buildCommand' for $dirName.  Build time: $buildTime seconds. ----\n\n";
+    $buildTime = (int) round(microtime(true) - $timeStart);
+    echo "---- Done '{$buildCommand}' for {$dirName} ({$buildTime}s). ----\n\n";
     if ($exitCode > 0) {
         exit($exitCode);
     }
 }
 
-// Remove files and directories if '--cleanup' argument is supplied to save local developers from disasters.
-if (is_array($argv) && in_array('--cleanup', $argv)) {
-    foreach ($removables as $removable) {
-        if (file_exists($removable)) {
-            print "Removing $removable from $dirName\n";
-            shell_exec("rm -rf $removable");
+if ($cleanupRelease) {
+    $removables = [
+        'node_modules',
+        'build.php',
+        '.github',
+        '.gitattributes',
+        '.gitignore',
+        '.npmrc',
+        'package-lock.json',
+        'package.json',
+        'vite.config.mjs',
+        'source/sass',
+        '.editorconfig',
+    ];
+
+    foreach ($removables as $path) {
+        $full = $pluginRoot . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $path);
+        if (file_exists($full)) {
+            echo "Removing {$path} from {$dirName}\n";
+            if (is_dir($full)) {
+                removeDirectory($full);
+            } else {
+                @unlink($full);
+            }
         }
     }
 }
 
 /**
- * Better shell script execution with live output to STDOUT and status code return.
- * @param  string $command Command to execute in shell.
- * @return int             Exit code.
+ * @return int Exit code (0 = success).
  */
-function executeCommand($command)
+function executeCommand(string $command): int
 {
     $fullCommand = '';
     if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-        $fullCommand = "cmd /v:on /c \"$command 2>&1 & echo Exit status : !ErrorLevel!\"";
+        $fullCommand = "cmd /v:on /c \"{$command} 2>&1 & echo Exit status : !ErrorLevel!\"";
     } else {
-        $fullCommand = "$command 2>&1 ; echo Exit status : $?";
+        $fullCommand = "{$command} 2>&1 ; echo Exit status : $?";
     }
 
     $proc = popen($fullCommand, 'r');
+    if ($proc === false) {
+        return 1;
+    }
 
-    $liveOutput     = '';
     $completeOutput = '';
-
-    while (!feof($proc)) {
-        $liveOutput     = fread($proc, 4096);
-        $completeOutput = $completeOutput . $liveOutput;
-        print $liveOutput;
+    while (! feof($proc)) {
+        $chunk = fread($proc, 4096);
+        if ($chunk !== false) {
+            $completeOutput .= $chunk;
+            echo $chunk;
+        }
         @flush();
     }
 
     pclose($proc);
 
-    // Get exit status.
     preg_match('/[0-9]+$/', $completeOutput, $matches);
 
-    // Return exit status.
-    return intval($matches[0]);
+    return isset($matches[0]) ? (int) $matches[0] : 1;
+}
+
+function removeDirectory(string $dir): void
+{
+    if (! is_dir($dir)) {
+        return;
+    }
+    $items = scandir($dir);
+    if ($items === false) {
+        return;
+    }
+    foreach ($items as $item) {
+        if ($item === '.' || $item === '..') {
+            continue;
+        }
+        $path = $dir . DIRECTORY_SEPARATOR . $item;
+        is_dir($path) ? removeDirectory($path) : @unlink($path);
+    }
+    @rmdir($dir);
 }
