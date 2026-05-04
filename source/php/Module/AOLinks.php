@@ -29,7 +29,8 @@ class AOLinks extends \Modularity\Module
     {
         $fields = $this->getFields();
         $rootPageId = $this->resolveRootPageId($fields);
-        $manualLinks = $this->buildManualLinksPayload($fields['links'] ?? []);
+        $linksRows = $fields['links'] ?? [];
+        $manualLinks = $this->buildManualLinksPayload(is_array($linksRows) ? $linksRows : []);
         $instanceId = $this->getID();
         $instanceKey = $instanceId !== null ? (string) $instanceId : uniqid('mod-a-o-', false);
 
