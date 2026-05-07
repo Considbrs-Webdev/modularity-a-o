@@ -39,11 +39,13 @@ class AOLinks extends \Modularity\Module
         $merged = $builder->mergeLinks($apiPages, $manualLinks);
         $sorted = $builder->sortByLabelSv($merged);
         $sections = $builder->buildSections($instanceKey, $sorted);
+        $regionHeadingId = 'mod-a-o-region-' . $instanceKey;
 
         return [
             'instanceId' => $instanceKey,
             'hasLinks' => $sections !== [],
             'sections' => $sections,
+            'regionHeadingId' => $regionHeadingId,
             'i18n' => [
                 'empty' => __('No links to display yet.', 'modularity-a-o'),
                 'jumpLabel' => __('Jump to letter', 'modularity-a-o'),
@@ -71,9 +73,7 @@ class AOLinks extends \Modularity\Module
         }
     }
 
-    public function script(): void
-    {
-    }
+    public function script(): void {}
 
     /**
      * @param array<string, mixed> $fields
